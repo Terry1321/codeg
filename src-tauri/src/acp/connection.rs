@@ -4383,17 +4383,16 @@ async fn apply_kiro_metadata(
 /// removed: which exist depends on the model.
 fn place_kiro_reasoning_selectors(opts: &mut Vec<SessionConfigOptionInfo>, reasoning: &KiroReasoning) {
     opts.retain(|o| o.id != KIRO_THINKING_OPTION_ID && o.id != KIRO_EFFORT_OPTION_ID);
-    let mut at = opts
+    let at = opts
         .iter()
         .position(|o| o.id == KIRO_MODEL_OPTION_ID)
         .map_or(opts.len(), |pos| pos + 1);
-    for option in [kiro_thinking_option(reasoning), kiro_effort_option(reasoning)]
-        .into_iter()
-        .flatten()
-    {
-        opts.insert(at, option);
-        at += 1;
-    }
+    opts.splice(
+        at..at,
+        [kiro_thinking_option(reasoning), kiro_effort_option(reasoning)]
+            .into_iter()
+            .flatten(),
+    );
 }
 
 /// Rebuild the reasoning selectors in the emitted options from `reasoning`.
